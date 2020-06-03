@@ -52,8 +52,11 @@ func (mpg *MilesPerGallon) formattedMpgWithoutVelocity() string {
 }
 
 func (mpg *MilesPerGallon) formattedMpgWithVelocity() string {
-	return fmt.Sprintf("    %v mpg @ %d mph\n", mpg.CalcMpg(),
-		mpg.Velocity)
+	return fmt.Sprintf(
+		"    %v mpg @ %d mph\n",
+		mpg.CalcMpg(),
+		mpg.Velocity,
+	)
 }
 
 func (mpg *MilesPerGallon) formattedMpg() string {
