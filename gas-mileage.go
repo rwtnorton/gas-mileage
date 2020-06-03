@@ -75,21 +75,29 @@ func (mpg *MilesPerGallon) String() string {
 	return buffer.String()
 }
 
-func main() {
-	var miles, gallons float64
-	var date string
-	var velocity uint
+var (
+	miles      float64
+	gallons    float64
+	date       string
+	velocity   uint
+	parsedDate time.Time
+)
+
+func init() {
 	flag.Float64Var(&miles, "miles", 0.0, "miles travelled as float")
 	flag.Float64Var(&gallons, "gallons", 0.0, "gallons consumed as float")
 	flag.StringVar(&date, "date", today(), "date of measurement as YYYY-mm-dd")
 	flag.UintVar(&velocity, "velocity", 0, "avg velocity in mph")
 	flag.Parse()
 
-	parsedDate, err := time.Parse(dateFormat, date)
+	var err error
+	parsedDate, err = time.Parse(dateFormat, date)
 	if err != nil {
 		log.Fatalf("Invalid date: %v\n", date)
 	}
+}
 
+func main() {
 	mpg := MilesPerGallon{
 		Miles:    miles,
 		Gallons:  gallons,
