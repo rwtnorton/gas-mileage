@@ -1,74 +1,74 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
-	"time"
 	"log"
-	"bytes"
+	"time"
 )
 
 const (
-	YYYYMMDD = "2006-01-02"
+	dateFormat = "2006-01-02"
 )
 
-func yyyymmdd(t time.Time) string {
-	return t.Format(YYYYMMDD)
+func formatAsDate(t time.Time) string {
+	return t.Format(dateFormat)
 }
 
 func today() string {
-	return yyyymmdd(time.Now())
+	return formatAsDate(time.Now())
 }
 
 type MilesPerGallon struct {
-	Miles float64
-	Gallons float64
-	Date time.Time
+	Miles    float64
+	Gallons  float64
+	Date     time.Time
 	Velocity uint
 }
 
-func (this *MilesPerGallon) CalcMpg() float64 {
-	return this.Miles / this.Gallons
+func (mpg *MilesPerGallon) CalcMpg() float64 {
+	return mpg.Miles / mpg.Gallons
 }
 
-func (this *MilesPerGallon) HasVelocity() bool {
-	return this.Velocity > 0
+func (mpg *MilesPerGallon) HasVelocity() bool {
+	return mpg.Velocity > 0
 }
 
-func (this *MilesPerGallon) formattedDate() string {
-	return fmt.Sprintf("%s:\n", yyyymmdd(this.Date))
+func (mpg *MilesPerGallon) formattedDate() string {
+	return fmt.Sprintf("%s:\n", formatAsDate(mpg.Date))
 }
 
-func (this *MilesPerGallon) formattedMiles() string {
-	return fmt.Sprintf("    %.1f miles\n", this.Miles)
+func (mpg *MilesPerGallon) formattedMiles() string {
+	return fmt.Sprintf("    %.1f miles\n", mpg.Miles)
 }
 
-func (this *MilesPerGallon) formattedGallons() string {
-	return fmt.Sprintf("    %.3f gallons\n", this.Gallons)
+func (mpg *MilesPerGallon) formattedGallons() string {
+	return fmt.Sprintf("    %.3f gallons\n", mpg.Gallons)
 }
 
-func (this *MilesPerGallon) formattedMpgWithoutVelocity() string {
-	return fmt.Sprintf("    %v mpg\n", this.CalcMpg())
+func (mpg *MilesPerGallon) formattedMpgWithoutVelocity() string {
+	return fmt.Sprintf("    %v mpg\n", mpg.CalcMpg())
 }
 
-func (this *MilesPerGallon) formattedMpgWithVelocity() string {
-	return fmt.Sprintf("    %v mpg @ %d mph\n", this.CalcMpg(),
-		this.Velocity)
+func (mpg *MilesPerGallon) formattedMpgWithVelocity() string {
+	return fmt.Sprintf("    %v mpg @ %d mph\n", mpg.CalcMpg(),
+		mpg.Velocity)
 }
 
-func (this *MilesPerGallon) formattedMpg() string {
-	if this.HasVelocity() {
-		return this.formattedMpgWithVelocity()
+func (mpg *MilesPerGallon) formattedMpg() string {
+	if mpg.HasVelocity() {
+		return mpg.formattedMpgWithVelocity()
 	}
-	return this.formattedMpgWithoutVelocity()
+	return mpg.formattedMpgWithoutVelocity()
 }
 
-func (this *MilesPerGallon) String() string {
+func (mpg *MilesPerGallon) String() string {
 	var buffer bytes.Buffer
-	buffer.WriteString(this.formattedDate())
-	buffer.WriteString(this.formattedMiles())
-	buffer.WriteString(this.formattedGallons())
-	buffer.WriteString(this.formattedMpg())
+	buffer.WriteString(mpg.formattedDate())
+	buffer.WriteString(mpg.formattedMiles())
+	buffer.WriteString(mpg.formattedGallons())
+	buffer.WriteString(mpg.formattedMpg())
 	return buffer.String()
 }
 
@@ -82,15 +82,15 @@ func main() {
 	flag.UintVar(&velocity, "velocity", 0, "avg velocity in mph")
 	flag.Parse()
 
-	parsedDate, err := time.Parse(YYYYMMDD, date)
+	parsedDate, err := time.Parse(dateFormat, date)
 	if err != nil {
 		log.Fatalf("Invalid date: %v\n", date)
 	}
 
 	mpg := MilesPerGallon{
-		Miles: miles,
-		Gallons: gallons,
-		Date: parsedDate,
+		Miles:    miles,
+		Gallons:  gallons,
+		Date:     parsedDate,
 		Velocity: velocity,
 	}
 	fmt.Print(mpg.String())
